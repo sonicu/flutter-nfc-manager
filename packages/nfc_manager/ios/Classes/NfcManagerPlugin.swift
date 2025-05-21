@@ -379,6 +379,19 @@ public class NfcManagerPlugin: NSObject, FlutterPlugin, HostApiPigeon {
     }
   }
 
+  func iso15693ExtendedReadMultipleBlocks(handle: String, requestFlags: [Iso15693RequestFlagPigeon], blockNumber: Int64, numberOfBlocks: Int64, completion: @escaping (Result<[FlutterStandardTypedData], Error>) -> Void) {
+    guard let tag = cachedTags[handle] as? NFCISO15693Tag else { completion(.failure(FlutterError(code: "tag_not_found", message: "You may have disable the session.", details: nil))); return }
+    
+    if #available(iOS 14.0, *) {
+      tag.extendedReadMultipleBlocks(requestFlags: convert(requestFlags), blockRange: NSRange(location: Int(blockNumber), length: Int(numberOfBlocks))) { dataBlocks, error in
+        guard error == nil else { completion(.failure(error!)); return }
+        completion(.success(dataBlocks.map { FlutterStandardTypedData(bytes: $0) }))
+      }
+    } else {
+      completion(.failure(FlutterError(code: "unavailable", message: "This functionality requires iOS 14.0 or later.", details: nil)))
+    }
+  }
+
   func iso15693CustomCommand(handle: String, requestFlags: [Iso15693RequestFlagPigeon], customCommandCode: Int64, customRequestParameters: FlutterStandardTypedData, completion: @escaping (Result<FlutterStandardTypedData, Error>) -> Void) {
     guard let tag = cachedTags[handle] as? NFCISO15693Tag else { completion(.failure(FlutterError(code: "tag_not_found", message: "You may have disable the session.", details: nil))); return }
     tag.customCommand(requestFlags: convert(requestFlags), customCommandCode: Int(customCommandCode), customRequestParameters: customRequestParameters.data) { data, error in

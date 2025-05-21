@@ -62,6 +62,7 @@ abstract final class HostApiPigeon {
   @async Iso15693SystemInfoPigeon iso15693GetSystemInfo({required String handle, required List<Iso15693RequestFlagPigeon> requestFlags});
   @async List<int> iso15693GetMultipleBlockSecurityStatus({required String handle, required List<Iso15693RequestFlagPigeon> requestFlags, required int blockNumber, required int numberOfBlocks});
   @async Uint8List iso15693CustomCommand({required String handle, required List<Iso15693RequestFlagPigeon> requestFlags, required int customCommandCode, required Uint8List customRequestParameters});
+  @async List<Uint8List> iso15693ExtendedReadMultipleBlocks({required String handle, required List<Iso15693RequestFlagPigeon> requestFlags, required int blockNumber, required int numberOfBlocks});
 }
 
 final class TagPigeon {

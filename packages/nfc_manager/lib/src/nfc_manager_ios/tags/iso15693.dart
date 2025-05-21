@@ -250,6 +250,25 @@ final class Iso15693Ios {
   }
 
   // TODO: DOC
+  Future<List<Uint8List>> extendedReadMultipleBlocks({
+    required Set<Iso15693RequestFlagIos> requestFlags,
+    required int blockNumber,
+    required int numberOfBlocks,
+  }) {
+    return hostApi
+        .iso15693ExtendedReadMultipleBlocks(
+          handle: _handle,
+          requestFlags:
+              requestFlags
+                  .map((e) => Iso15693RequestFlagPigeon.values.byName(e.name))
+                  .toList(),
+          blockNumber: blockNumber,
+          numberOfBlocks: numberOfBlocks,
+        )
+        .then((value) => List.from(value));
+  }
+
+  // TODO: DOC
   Future<Uint8List> customCommand({
     required Set<Iso15693RequestFlagIos> requestFlags,
     required int customCommandCode,
